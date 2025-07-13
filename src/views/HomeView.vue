@@ -15,6 +15,7 @@
         <template #default="scope">
           <el-button @click="edit(scope.row)">编辑</el-button>
           <el-button @click="deleteRow(scope.row)">删除</el-button>
+          <el-button @click="openTagDialog(scope.row)">添加标签</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -43,12 +44,28 @@
       </span>
     </template>
   </el-dialog>
+  <el-dialog v-model="isShowTag" title="添加tag">
+    <el-select style="width: 100%" v-model="tags" multiple>
+      <el-option value="tag1">tag1</el-option>
+      <el-option value="tag2">tag2</el-option>
+      <el-option value="tag3">tag3</el-option>
+    </el-select>
+    <template #footer>
+      <el-button @click="addTa" type="primary">确定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import type { FormInstance } from "element-plus";
-import { addUser, updateUser, delUser, getList } from "../server/request";
+import {
+  addUser,
+  updateUser,
+  delUser,
+  getList,
+  addTags,
+} from "../server/request";
 const total = ref<number>(0);
 //搜索框
 const search = reactive({
@@ -107,6 +124,22 @@ const edit = (row: any) => {
 //关闭弹框
 const close = () => {
   dialogVisible.value = false;
+};
+
+//添加标签
+
+const isShowTag = ref<boolean>(false);
+const tags = ref<string[]>([]);
+const selectedTagId = ref<number>(0);
+const openTagDialog = (row: any) => {
+  isShowTag.value = true;
+  selectedTagId.value = row.id;
+};
+const addTa = async () => {
+  const res = await addTags({ tags: tags.value, userId: selectedTagId.value });
+  isShowTag.value = false;
+  selectedTagId.value = 0;
+  tags.value = [];
 };
 </script>
 

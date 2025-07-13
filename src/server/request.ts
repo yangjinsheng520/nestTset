@@ -15,3 +15,8 @@ export const delUser = (data: any) =>
   service.delete(`/user/${data.id}`).then((res) => res.data);
 export const updateUser = (data: any) =>
   service.patch(`/user/${data.id}`, data).then((res) => res.data);
+export const addTags = (data: any) => {
+  service.post("/user/add/tags", data).then((res) => {
+    res.data;
+  });
+};
